@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <marker id="arr" markerWidth="5" markerHeight="4" refX="5" refY="2" orient="auto">
+      <polygon points="0 0, 5 2, 0 4" fill="#666"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="3" dy="3" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  
+  <text x="450" y="30" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#1a1a2e">Deployment Workflow</text>
+  
+  <rect x="50" y="50" width="200" height="60" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="72" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#1976D2">Step 1</text>
+  <text x="150" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">01_database_schema.sql</text>
+  <text x="150" y="102" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">DB, Schemas, Warehouse</text>
+  
+  <line x1="250" y1="80" x2="300" y2="80" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="300" y="50" width="200" height="60" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="400" y="72" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#1976D2">Step 2</text>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">02_create_tables.sql</text>
+  <text x="400" y="102" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">Dimension + Fact Tables</text>
+  
+  <line x1="500" y1="80" x2="550" y2="80" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="550" y="50" width="200" height="60" rx="8" fill="#E8F5E9" stroke="#388E3C" stroke-width="2" filter="url(#shadow)"/>
+  <text x="650" y="72" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#388E3C">Step 3</text>
+  <text x="650" y="88" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">03_synthetic_data.sql</text>
+  <text x="650" y="102" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">50K conversations</text>
+  
+  <path d="M650 110 L650 150 L150 150 L150 198" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  
+  <rect x="50" y="203" width="200" height="60" rx="8" fill="#FFF3E0" stroke="#F57C00" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="225" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#F57C00">Step 4</text>
+  <text x="150" y="241" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">04_create_views.sql</text>
+  <text x="150" y="255" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">7 Analytical Views</text>
+  
+  <line x1="250" y1="233" x2="300" y2="233" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="300" y="203" width="200" height="60" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="400" y="225" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#7B1FA2">Step 5</text>
+  <text x="400" y="241" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">05_semantic_views.sql</text>
+  <text x="400" y="255" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">3 Semantic Views</text>
+  
+  <line x1="500" y1="233" x2="550" y2="233" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="550" y="203" width="200" height="60" rx="8" fill="#E0F7FA" stroke="#00838F" stroke-width="2" filter="url(#shadow)"/>
+  <text x="650" y="225" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#00838F">Step 6</text>
+  <text x="650" y="241" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">06_cortex_search.sql</text>
+  <text x="650" y="255" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">2 Search Services</text>
+  
+  <path d="M650 263 L650 320 L150 320 L150 351" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  
+  <rect x="50" y="356" width="200" height="60" rx="8" fill="#FCE4EC" stroke="#C2185B" stroke-width="2" filter="url(#shadow)"/>
+  <text x="150" y="378" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="#C2185B">Step 7</text>
+  <text x="150" y="394" text-anchor="middle" font-family="Arial" font-size="9" fill="#333">07_ml_functions.sql</text>
+  <text x="150" y="408" text-anchor="middle" font-family="Arial" font-size="8" fill="#666">9 Agent Functions</text>
+  
+  <line x1="250" y1="386" x2="300" y2="386" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="300" y="356" width="200" height="60" rx="8" fill="#29B5E8" stroke="#0D47A1" stroke-width="3" filter="url(#shadow)"/>
+  <text x="400" y="378" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold" fill="white">Step 8 (Final)</text>
+  <text x="400" y="394" text-anchor="middle" font-family="Arial" font-size="9" fill="white">08_create_agent.sql</text>
+  <text x="400" y="408" text-anchor="middle" font-family="Arial" font-size="8" fill="white">Cortex Agent</text>
+  
+  <line x1="400" y1="416" x2="400" y2="451" stroke="#666" stroke-width="2" marker-end="url(#arr)"/>
+  
+  <rect x="300" y="456" width="200" height="50" rx="8" fill="#4CAF50" stroke="#2E7D32" stroke-width="2" filter="url(#shadow)"/>
+  <text x="400" y="478" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="white">Verification</text>
+  <text x="400" y="496" text-anchor="middle" font-family="Arial" font-size="9" fill="white">Test with docs/questions.md</text>
+</svg>

@@ -1,0 +1,42 @@
+-- =============================================
+-- Clublabs Intelligence Agent - Database Setup
+-- Step 1: Database, Schemas, and Warehouse
+-- =============================================
+
+USE ROLE ACCOUNTADMIN;
+
+-- Create main database
+CREATE DATABASE IF NOT EXISTS CLUBLABS_INTELLIGENCE;
+USE DATABASE CLUBLABS_INTELLIGENCE;
+
+-- Create schemas for data organization
+CREATE SCHEMA IF NOT EXISTS RAW;           -- Raw ingested data from ERS chatbot
+CREATE SCHEMA IF NOT EXISTS STAGING;       -- Transformed staging data
+CREATE SCHEMA IF NOT EXISTS ANALYTICS;     -- Analytics-ready data (star schema)
+CREATE SCHEMA IF NOT EXISTS SEMANTIC;      -- Semantic views for Cortex Analyst
+CREATE SCHEMA IF NOT EXISTS SEARCH;        -- Cortex Search services
+CREATE SCHEMA IF NOT EXISTS MODELS;        -- ML models and agent functions
+
+-- Create warehouse for processing
+CREATE OR REPLACE WAREHOUSE CLUBLABS_WH WITH
+    WAREHOUSE_SIZE = 'X-SMALL'
+    AUTO_SUSPEND = 300
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE
+    COMMENT = 'Warehouse for Clublabs Intelligence Agent';
+
+USE WAREHOUSE CLUBLABS_WH;
+
+-- Grant necessary permissions
+GRANT USAGE ON DATABASE CLUBLABS_INTELLIGENCE TO ROLE PUBLIC;
+GRANT USAGE ON ALL SCHEMAS IN DATABASE CLUBLABS_INTELLIGENCE TO ROLE PUBLIC;
+GRANT SELECT ON FUTURE TABLES IN DATABASE CLUBLABS_INTELLIGENCE TO ROLE PUBLIC;
+GRANT SELECT ON FUTURE VIEWS IN DATABASE CLUBLABS_INTELLIGENCE TO ROLE PUBLIC;
+
+-- Create database for agent deployment
+CREATE DATABASE IF NOT EXISTS SNOWFLAKE_INTELLIGENCE;
+CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_INTELLIGENCE.AGENTS;
+GRANT USAGE ON DATABASE SNOWFLAKE_INTELLIGENCE TO ROLE PUBLIC;
+GRANT USAGE ON SCHEMA SNOWFLAKE_INTELLIGENCE.AGENTS TO ROLE PUBLIC;
+
+SELECT 'Database and schema setup complete' AS STATUS;
