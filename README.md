@@ -1,3 +1,5 @@
+<img src="Snowflake_Logo.svg" width="200">
+
 # Clublabs Intelligence Agent
 
 An enterprise-grade AI-powered analytics platform for Emergency Roadside Services (ERS) chatbot performance analysis, built on Snowflake Cortex. This project implements a streaming-first ELT pipeline that transforms raw application logs into actionable insights through natural language queries.
