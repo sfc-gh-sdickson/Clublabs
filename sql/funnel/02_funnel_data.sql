@@ -1,0 +1,118 @@
+-- =============================================
+-- Clublabs Intelligence - 19-Step Funnel Data
+-- Generate synthetic funnel data
+-- =============================================
+
+USE ROLE ACCOUNTADMIN;
+USE DATABASE CLUBLABS_INTELLIGENCE;
+USE WAREHOUSE CLUBLABS_WH;
+
+-- =============================================
+-- GENERATE SYNTHETIC FUNNEL SESSIONS
+-- =============================================
+
+INSERT INTO ANALYTICS.FACT_FUNNEL_SESSION (
+    SESSION_ID, CONVERSATION_KEY, MEMBER_KEY, DATE_KEY, CHANNEL_KEY,
+    SESSION_START, SESSION_END, TOTAL_DURATION_SECONDS,
+    STEPS_COMPLETED, MAX_STEP_REACHED, DROP_OFF_STEP, DROP_OFF_REASON,
+    STEP_1_LANDING, STEP_2_CHAT_INIT, STEP_3_WELCOME_MSG, STEP_4_MEMBER_AUTH,
+    STEP_5_MEMBER_VERIFIED, STEP_6_INTENT_PROMPT, STEP_7_INTENT_SELECTED,
+    STEP_8_INTENT_CONFIRMED, STEP_9_LOCATION_PROMPT, STEP_10_LOCATION_PROVIDED,
+    STEP_11_LOCATION_VERIFIED, STEP_12_VEHICLE_PROMPT, STEP_13_VEHICLE_PROVIDED,
+    STEP_14_SERVICE_DETAILS, STEP_15_SERVICE_CONFIRMED, STEP_16_DISPATCH_INITIATED,
+    STEP_17_ETA_PROVIDED, STEP_18_CONFIRMATION_SENT, STEP_19_SESSION_COMPLETE,
+    IS_COMPLETE, WAS_ESCALATED
+)
+SELECT 
+    'FUNNEL_' || LPAD(SEQ4()::VARCHAR, 10, '0') AS SESSION_ID,
+    fc.CONVERSATION_KEY,
+    fc.MEMBER_KEY,
+    fc.DATE_KEY,
+    fc.CHANNEL_KEY,
+    fc.START_TIMESTAMP AS SESSION_START,
+    fc.END_TIMESTAMP AS SESSION_END,
+    fc.DURATION_SECONDS AS TOTAL_DURATION_SECONDS,
+    
+    -- Simulate realistic drop-off pattern
+    CASE 
+        WHEN UNIFORM(1, 100, RANDOM()) <= 5 THEN 1   -- 5% drop at step 1
+        WHEN UNIFORM(1, 100, RANDOM()) <= 10 THEN 2  -- 10% drop at step 2
+        WHEN UNIFORM(1, 100, RANDOM()) <= 8 THEN 4   -- 8% drop at auth
+        WHEN UNIFORM(1, 100, RANDOM()) <= 12 THEN 7  -- 12% drop at intent
+        WHEN UNIFORM(1, 100, RANDOM()) <= 15 THEN 10 -- 15% drop at location
+        WHEN UNIFORM(1, 100, RANDOM()) <= 10 THEN 13 -- 10% drop at vehicle
+        WHEN UNIFORM(1, 100, RANDOM()) <= 8 THEN 15  -- 8% drop at confirm
+        ELSE 19                                       -- 32% complete
+    END AS STEPS_COMPLETED,
+    
+    CASE 
+        WHEN UNIFORM(1, 100, RANDOM()) <= 5 THEN 1
+        WHEN UNIFORM(1, 100, RANDOM()) <= 10 THEN 2
+        WHEN UNIFORM(1, 100, RANDOM()) <= 8 THEN 4
+        WHEN UNIFORM(1, 100, RANDOM()) <= 12 THEN 7
+        WHEN UNIFORM(1, 100, RANDOM()) <= 15 THEN 10
+        WHEN UNIFORM(1, 100, RANDOM()) <= 10 THEN 13
+        WHEN UNIFORM(1, 100, RANDOM()) <= 8 THEN 15
+        ELSE 19
+    END AS MAX_STEP_REACHED,
+    
+    CASE 
+        WHEN UNIFORM(1, 100, RANDOM()) > 68 THEN NULL  -- Completed sessions
+        ELSE UNIFORM(1, 18, RANDOM())                  -- Drop-off step
+    END AS DROP_OFF_STEP,
+    
+    CASE 
+        WHEN UNIFORM(1, 100, RANDOM()) <= 68 THEN 
+            CASE UNIFORM(1, 5, RANDOM())
+                WHEN 1 THEN 'User abandoned session'
+                WHEN 2 THEN 'Authentication timeout'
+                WHEN 3 THEN 'Location services unavailable'
+                WHEN 4 THEN 'User requested human agent'
+                ELSE 'Technical error'
+            END
+        ELSE NULL
+    END AS DROP_OFF_REASON,
+    
+    -- Step completion flags (cumulative - if you reach step N, you completed 1 through N)
+    TRUE AS STEP_1_LANDING,
+    UNIFORM(1, 100, RANDOM()) > 5 AS STEP_2_CHAT_INIT,
+    UNIFORM(1, 100, RANDOM()) > 8 AS STEP_3_WELCOME_MSG,
+    UNIFORM(1, 100, RANDOM()) > 12 AS STEP_4_MEMBER_AUTH,
+    UNIFORM(1, 100, RANDOM()) > 18 AS STEP_5_MEMBER_VERIFIED,
+    UNIFORM(1, 100, RANDOM()) > 20 AS STEP_6_INTENT_PROMPT,
+    UNIFORM(1, 100, RANDOM()) > 28 AS STEP_7_INTENT_SELECTED,
+    UNIFORM(1, 100, RANDOM()) > 30 AS STEP_8_INTENT_CONFIRMED,
+    UNIFORM(1, 100, RANDOM()) > 32 AS STEP_9_LOCATION_PROMPT,
+    UNIFORM(1, 100, RANDOM()) > 42 AS STEP_10_LOCATION_PROVIDED,
+    UNIFORM(1, 100, RANDOM()) > 44 AS STEP_11_LOCATION_VERIFIED,
+    UNIFORM(1, 100, RANDOM()) > 46 AS STEP_12_VEHICLE_PROMPT,
+    UNIFORM(1, 100, RANDOM()) > 52 AS STEP_13_VEHICLE_PROVIDED,
+    UNIFORM(1, 100, RANDOM()) > 54 AS STEP_14_SERVICE_DETAILS,
+    UNIFORM(1, 100, RANDOM()) > 60 AS STEP_15_SERVICE_CONFIRMED,
+    UNIFORM(1, 100, RANDOM()) > 62 AS STEP_16_DISPATCH_INITIATED,
+    UNIFORM(1, 100, RANDOM()) > 64 AS STEP_17_ETA_PROVIDED,
+    UNIFORM(1, 100, RANDOM()) > 66 AS STEP_18_CONFIRMATION_SENT,
+    UNIFORM(1, 100, RANDOM()) > 68 AS STEP_19_SESSION_COMPLETE,
+    
+    UNIFORM(1, 100, RANDOM()) > 68 AS IS_COMPLETE,
+    fc.WAS_ESCALATED
+FROM ANALYTICS.FACT_CONVERSATION fc
+WHERE fc.CONVERSATION_KEY <= 30000;  -- Generate 30K funnel sessions
+
+-- =============================================
+-- VERIFY DATA
+-- =============================================
+
+SELECT 'Total funnel sessions: ' || COUNT(*) AS STATUS FROM ANALYTICS.FACT_FUNNEL_SESSION;
+
+SELECT 
+    STEP_19_SESSION_COMPLETE,
+    COUNT(*) AS COUNT,
+    ROUND(COUNT(*)::FLOAT / SUM(COUNT(*)) OVER () * 100, 2) AS PCT
+FROM ANALYTICS.FACT_FUNNEL_SESSION
+GROUP BY STEP_19_SESSION_COMPLETE;
+
+-- Sample drop-off analysis
+SELECT * FROM ANALYTICS.V_FUNNEL_DROPOFF_ANALYSIS LIMIT 10;
+
+SELECT 'Funnel synthetic data generation complete' AS STATUS;
